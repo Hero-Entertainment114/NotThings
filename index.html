@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="vi">
 <head>
   <meta charset="utf-8">
@@ -53,21 +53,22 @@
       <section class="card hidden" id="profile-view">
         <div class="eyebrow">Trước khi bắt đầu</div>
         <h2>Chia sẻ ở mức bạn thấy thoải mái.</h2>
-        <p class="muted" style="font-size:13px;line-height:1.8">Tên và độ tuổi đều là bắt buộc. Đừng lo, mọi thông tin đều sẽ được bảo mật.</p>
+        <p class="muted" style="font-size:13px;line-height:1.8">Bạn chỉ cần dùng tên và độ tuổi. Không cần thông tin liên hệ để tham gia.</p>
         <form id="profile-form">
           <div class="fields">
-            <div class="field"><label for="nickname">Tên (bắt buộc)</label><input id="nickname" name="nickname" maxlength="80" placeholder="Ví dụ: Hoàng, ..."><div class="hint">Hãy nhập họ tên thật hoặc thông tin nhận dạng.</div></div>
-            <div class="field"><label for="age">Độ tuổi (bắt buộc)</label><input id="age" name="age" type="number" min="10" max="100" placeholder="Không được để trống"><div class="hint">Chỉ dùng để điều chỉnh cách diễn đạt.</div></div>
+            <div class="field"><label for="nickname">Tên (bắt buộc)</label><input id="nickname" name="nickname" maxlength="80" autocomplete="off" placeholder="Ví dụ: Hoàng, Lan..."><div class="hint">Vui lòng nhập họ tên thật hoặc thông tin nhận dạng.</div></div>
+            <div class="field"><label for="age">Độ tuổi (bắt buộc)</label><input id="age" name="age" type="number" min="10" max="100" inputmode="numeric" placeholder="Không được để trống"><div class="hint">Giúp điều chỉnh cách diễn đạt.</div></div>
           </div>
-          <label class="consent-row" for="consent-discord"><input id="consent-discord" type="checkbox"><span><strong>Tôi đồng ý với Điều khoản và Chính sách bảo mật.</strong><br>Nếu tích chọn, câu trả lời, phản hồi và phần tổng kết sẽ được bảo mật và bạn đồng ý với Điều khoản và Chính sách của chúng tôi.</span></label>
-          <div class="soft-note" style="margin-bottom:0">Câu trả lời được xử lý bởi dịch vụ AI để tạo câu hỏi, phản hồi và tổng kết (A.I có thể sẽ mắc lỗi, không phải chẩn đoán hay thay thế chuyên gia tâm lý). Không nhập mật khẩu, địa chỉ, số điện thoại hoặc thông tin riêng tư mà bạn không muốn chia sẻ.</div>
+          <label class="consent-row" for="consent-zulip"><input id="consent-zulip" type="checkbox"><span><strong>Tôi đồng ý với Điều khoản và Chính sách bảo mật.</strong><br>Nếu chọn, báo cáo gồm câu trả lời, phản hồi AI và phần tổng kết sẽ được bảo mật và bạn đồng ý với Điều khoản và Chính sách của chúng tôi.</span></label>
+          <label class="consent-row" for="consent-email-fallback" style="margin-top:10px"><input id="consent-email-fallback" type="checkbox" disabled><span><strong>Tôi đồng ý dùng  chế độ Nâng cao.</strong><br>Khi chọn, AI sẽ thông minh hơn, đừng lo nó hoàn toàn miễn phí.</span></label>
+          <div class="soft-note" style="margin-bottom:0"><span class="notice-title">Về quyền riêng tư:</span> Câu trả lời được gửi đến dịch vụ AI để tạo câu hỏi, phản hồi và tổng kết. AI có thể mắc lỗi; kết quả không phải chẩn đoán và không thay thế chuyên gia tâm lý. Tránh nhập mật khẩu, địa chỉ hoặc thông tin riêng tư khác.</div>
           <div class="error-box hidden" id="profile-error" role="alert"></div>
           <div class="actions"><button type="button" class="btn btn-secondary" id="back-welcome">← Quay lại</button><button type="submit" class="btn btn-primary" id="create-questions-btn">Tạo bộ câu hỏi <span aria-hidden="true">→</span></button></div>
         </form>
       </section>
 
       <section class="card hidden" id="quiz-view">
-        <div class="quiz-head"><span class="pill pill-count" id="question-counter">Câu 1 / 10</span></div>
+        <div class="quiz-head"><span class="pill pill-count" id="question-counter">Câu 1 / 10</span><span class="pill pill-source" id="question-source">Câu hỏi</span></div>
         <div class="progress-wrap" aria-label="Tiến độ khảo sát"><div class="progress" id="progress-bar"></div></div>
         <div class="mini-label" id="question-category">Cảm xúc & tình cảm</div>
         <h2 class="question-title" id="question-title"></h2>
@@ -97,7 +98,7 @@
           <div class="result-section"><h3>♡ Những điều bạn có thể ghi nhận ở mình</h3><ul id="analysis-strengths"></ul></div>
           <div class="result-section"><h3>✦ Gợi ý có thể thử</h3><ol id="analysis-recommendations"></ol></div>
           <div class="result-callout" id="analysis-closing"></div>
-          <div id="discord-status" class="success-box" style="margin-top:17px"></div>
+          <div id="zulip-status" class="success-box" style="margin-top:17px"></div>
           <div class="result-actions disabled-actions" id="result-actions"><button class="btn btn-secondary" id="copy-report-btn">Sao chép báo cáo</button><button class="btn btn-secondary" id="download-txt-btn">Tải báo cáo TXT</button><button class="btn btn-secondary" id="download-json-btn">Tải báo cáo JSON</button><button class="btn btn-primary" id="restart-btn">Làm khảo sát mới ↻</button></div>
         </div>
       </section>
@@ -108,7 +109,7 @@
   <script>
     const state = {
       questions: [], currentIndex: 0, answers: Object.create(null), userInfo: { nickname: '', age: '' },
-      consentDiscord: false, finalReport: null, isBusy: false, analysisJobId: null, retryCoachQuestionId: null
+      consentZulip: false, consentEmailFallback: false, finalReport: null, isBusy: false, retryCoachQuestionId: null
     };
     const $ = (id) => document.getElementById(id);
     const views = ['welcome-view', 'profile-view', 'quiz-view', 'summary-view'];
@@ -123,6 +124,12 @@
       el.setAttribute('role', kind === 'info' ? 'status' : 'alert');
     }
     function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+    function syncConsentControls() {
+      const zulipChecked = $('consent-zulip').checked;
+      const emailCheckbox = $('consent-email-fallback');
+      emailCheckbox.disabled = !zulipChecked;
+      if (!zulipChecked) emailCheckbox.checked = false;
+    }
     function canRetryCoach(error) {
       const status = Number(error?.status || 0);
       if ([400, 401, 403, 404, 413].includes(status)) return false;
@@ -152,6 +159,7 @@
     $('begin-btn').addEventListener('click', () => showView('profile-view'));
     $('back-welcome').addEventListener('click', () => showView('welcome-view'));
     $('profile-form').addEventListener('submit', startSurvey);
+    $('consent-zulip').addEventListener('change', syncConsentControls);
     $('prev-btn').addEventListener('click', previousQuestion);
     $('next-btn').addEventListener('click', nextQuestion);
     $('restart-btn').addEventListener('click', restartSurvey);
@@ -159,6 +167,7 @@
     $('copy-report-btn').addEventListener('click', copyReport);
     $('download-txt-btn').addEventListener('click', downloadTxt);
     $('download-json-btn').addEventListener('click', downloadJson);
+    syncConsentControls();
     $('answer-textarea').addEventListener('input', () => {
       const q = state.questions[state.currentIndex];
       const value = $('answer-textarea').value;
@@ -173,7 +182,8 @@
       event.preventDefault();
       if (state.isBusy) return;
       state.userInfo = { nickname: $('nickname').value.trim().slice(0, 80), age: $('age').value.trim() };
-      state.consentDiscord = $('consent-discord').checked;
+      state.consentZulip = $('consent-zulip').checked;
+      state.consentEmailFallback = state.consentZulip && $('consent-email-fallback').checked;
       const button = $('create-questions-btn');
       button.disabled = true; button.innerHTML = '<span class="spinner"></span> Đang tạo 10 câu hỏi…';
       clearError('profile-error'); state.isBusy = true;
@@ -191,6 +201,8 @@
       if (!q) return;
       const saved = state.answers[q.id] || { answer: '', coach: null, reflectionAnswer: '' };
       $('question-counter').textContent = `Câu ${state.currentIndex + 1} / ${state.questions.length}`;
+      $('question-source').textContent = q.sourceType === 'txt' ? `Câu ${q.sourceNumber}` : 'AI tạo mới';
+      $('question-source').className = `pill ${q.sourceType === 'txt' ? 'pill-source' : 'pill-ai'}`;
       $('question-category').textContent = q.category || 'Cảm xúc & tình cảm';
       $('question-title').textContent = q.title;
       $('question-desc').textContent = q.description || 'Hãy trả lời theo mức độ thoải mái của bạn.';
@@ -287,7 +299,8 @@
       if (state.isBusy || state.currentIndex <= 0) return;
       const q = state.questions[state.currentIndex];
       const saved = state.answers[q.id];
-      if (saved && !saved.coach && !saved.skipped) saved.answer = $('answer-textarea').value.trim();
+      if (saved?.coach) saved.reflectionAnswer = $('followup-textarea').value.trim().slice(0, 1500);
+      else if (saved && !saved.skipped) saved.answer = $('answer-textarea').value.trim();
       state.currentIndex -= 1; renderQuestion();
     }
 
@@ -298,68 +311,82 @@
     }
 
     async function finishSurvey() {
+      if (state.isBusy) return;
+      state.isBusy = true;
       showView('summary-view');
-      $('final-loading').classList.remove('hidden'); $('final-content').classList.add('hidden'); $('retry-final-btn').classList.add('hidden'); clearError('final-error');
+      $('final-loading').classList.remove('hidden');
+      $('final-content').classList.add('hidden');
+      $('retry-final-btn').classList.add('hidden');
+      $('retry-final-btn').disabled = true;
+      $('result-actions').classList.add('disabled-actions');
+      clearError('final-error');
+
       const questions = state.questions.map(q => {
         const a = state.answers[q.id] || {};
-        return { id: q.id, title: q.title, category: q.category, sourceType: q.sourceType, sourceNumber: q.sourceNumber, answer: a.answer || '(Người tham gia bỏ qua câu hỏi)', coach: a.coach || null, reflectionAnswer: a.reflectionAnswer || '' };
+        return {
+          id: q.id,
+          title: q.title,
+          category: q.category,
+          sourceType: q.sourceType,
+          sourceNumber: q.sourceNumber,
+          answer: a.answer || '(Người tham gia bỏ qua câu hỏi)',
+          coach: a.coach || null,
+          reflectionAnswer: a.reflectionAnswer || ''
+        };
       });
+
       try {
-        const result = await api('/api/submit', { userInfo: state.userInfo, consentDiscord: state.consentDiscord, questions });
-        state.analysisJobId = result.jobId || null;
+        const result = await api('/api/submit', {
+          userInfo: state.userInfo,
+          consentZulip: state.consentZulip,
+          consentEmailFallback: state.consentEmailFallback,
+          questions
+        });
         state.finalReport = { ...result, userInfo: state.userInfo, questions };
-        renderFinalAnalysis(result.analysis);
-        $('analysis-status').textContent = result.analysisMessage || 'Mình đã nhận được phần chia sẻ của bạn. Bản tổng kết cá nhân đang được hoàn thiện.';
+        renderFinalAnalysis(result.analysis || {});
+        $('analysis-status').textContent = 'Bản tổng kết được tạo từ những điều bạn đã chia sẻ. Hãy giữ lại điều thấy hữu ích và bỏ qua điều chưa phù hợp.';
         $('analysis-status').className = 'info-box summary-status';
-        updateDiscordStatus(result.discord || {});
-        $('final-loading').classList.add('hidden');
+        updateDeliveryStatus(result);
         $('final-content').classList.remove('hidden');
-        if (state.analysisJobId) void watchAnalysisResult(state.analysisJobId);
+        $('result-actions').classList.remove('disabled-actions');
       } catch (error) {
-        $('final-loading').classList.add('hidden');
-        showError('final-error', `${error.message} Bạn có thể thử mở lại phần tổng kết; câu trả lời vẫn còn trong phiên hiện tại.`);
+        showError('final-error', `${error.message} Câu trả lời vẫn còn trong phiên trình duyệt này; bạn có thể thử tạo lại phần tổng kết.`);
         $('retry-final-btn').classList.remove('hidden');
+      } finally {
+        state.isBusy = false;
+        $('final-loading').classList.add('hidden');
+        $('retry-final-btn').disabled = false;
       }
     }
 
-    function updateDiscordStatus(discord = {}) {
-      const el = $('discord-status');
-      el.textContent = discord.reason || (state.consentDiscord
-        ? 'Đang chuẩn bị chuyển báo cáo theo lựa chọn của bạn.'
-        : 'Bạn đã chọn giữ kết quả ở đây, không gửi báo cáo sang Discord.');
-      if (discord.pending) el.className = 'info-box';
-      else if (discord.sent) { el.className = 'success-box'; el.textContent = '✓ ' + (discord.reason || 'Báo cáo đã được gửi theo lựa chọn của bạn.'); }
-      else if (state.consentDiscord) el.className = 'error-box';
-      else el.className = 'neutral-box';
-    }
-
-    async function watchAnalysisResult(jobId) {
-      const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-      let tries = 0;
-      while (state.analysisJobId === jobId && tries < 150) {
-        await delay(1000);
-        tries++;
-        try {
-          const response = await fetch(`/api/results?id=${encodeURIComponent(jobId)}`, { cache: 'no-store' });
-          if (!response.ok) continue;
-          const result = await response.json();
-          if (state.analysisJobId !== jobId) return;
-          if (result.analysisPersonalized || result.stage === 'complete') {
-            $('result-actions').classList.remove('disabled-actions');
-            renderFinalAnalysis(result.analysis);
-            state.finalReport = { ...state.finalReport, ...result, userInfo: state.userInfo, questions: state.finalReport.questions };
-            $('analysis-status').textContent = result.analysisPersonalized
-              ? 'Bản tổng kết cá nhân của bạn đã sẵn sàng. Hãy đón nhận những gợi ý phù hợp với mình, và chỉ giữ lại điều thấy có ích.'
-              : (result.analysisMessage || 'Mình đã chuẩn bị một lời nhắn hỗ trợ để bạn không phải chờ thêm.');
-            $('analysis-status').className = result.analysisPersonalized ? 'success-box summary-status' : 'info-box summary-status';
-          }
-          updateDiscordStatus(result.discord || {});
-          if (result.stage === 'complete') return;
-        } catch { /* A brief connection hiccup should not interrupt the visible reflection. */ }
-      }
-      if (state.analysisJobId === jobId) {
-        $('analysis-status').textContent = 'Lời nhắn mở đầu vẫn ở đây. Bạn có thể dùng kết quả hiện tại hoặc thử làm mới phần tổng kết sau.';
-        $('analysis-status').className = 'info-box summary-status';
+    function updateDeliveryStatus(result = {}) {
+      const el = $('zulip-status');
+      const zulip = result.zulip || {};
+      const emailFallback = result.emailFallback || {};
+      if (result.delivery === 'zulip' || zulip.sent) {
+        el.textContent = '✓ Báo cáo đã được gửi đến channel Zulip theo lựa chọn đồng ý của bạn.';
+        el.className = 'success-box';
+        if (zulip.messageUrl) {
+          const link = document.createElement('a');
+          link.href = zulip.messageUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = ' Mở tin nhắn Zulip';
+          link.style.marginLeft = '6px';
+          el.appendChild(link);
+        }
+      } else if (result.delivery === 'email' || emailFallback.sent) {
+        el.textContent = `Zulip không gửi được (${zulip.reason || 'lỗi không xác định'}). Báo cáo đã được chuyển sang email dự phòng theo lựa chọn riêng của bạn.`;
+        el.className = 'success-box';
+      } else if (state.consentZulip) {
+        const emailText = state.consentEmailFallback
+          ? ` Email dự phòng: ${emailFallback.reason || 'chưa gửi được.'}`
+          : ' Bạn chưa đồng ý gửi qua email dự phòng.';
+        el.textContent = `Zulip: ${zulip.reason || 'chưa gửi được.'}${emailText} Bạn vẫn có thể tải hoặc sao chép báo cáo.`;
+        el.className = 'error-box';
+      } else {
+        el.textContent = 'Bạn chưa đồng ý gửi báo cáo sang Zulip hoặc email. Kết quả chỉ hiển thị trong phiên này; bạn có thể tự tải hoặc sao chép báo cáo.';
+        el.className = 'neutral-box';
       }
     }
 
@@ -386,17 +413,35 @@
     }
     function downloadFile(name, content, type) {
       const blob = new Blob([content], { type }); const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
     function downloadTxt() { const txt = reportAsText(); if (txt) downloadFile('PsychoClass_Bao_Cao.txt', txt, 'text/plain;charset=utf-8'); }
     function downloadJson() {
       if (!state.finalReport) return;
-      const safeReport = { generatedAt: state.finalReport.timestamp, userInfo: state.userInfo, questions: state.finalReport.questions, analysis: state.finalReport.analysis, discordSent: Boolean(state.finalReport.discord?.sent) };
+      const safeReport = {
+        generatedAt: state.finalReport.timestamp,
+        userInfo: state.userInfo,
+        questions: state.finalReport.questions,
+        analysis: state.finalReport.analysis,
+        delivery: state.finalReport.delivery || 'local',
+        zulipSent: Boolean(state.finalReport.zulip?.sent),
+        emailFallbackSent: Boolean(state.finalReport.emailFallback?.sent)
+      };
       downloadFile('PsychoClass_Bao_Cao.json', JSON.stringify(safeReport, null, 2), 'application/json;charset=utf-8');
     }
     function restartSurvey() {
-      state.questions = []; state.currentIndex = 0; state.answers = Object.create(null); state.userInfo = { nickname: '', age: '' }; state.consentDiscord = false; state.finalReport = null; state.analysisJobId = null; state.retryCoachQuestionId = null;
-      $('profile-form').reset(); $('result-actions').classList.add('disabled-actions'); showView('welcome-view');
+      state.questions = [];
+      state.currentIndex = 0;
+      state.answers = Object.create(null);
+      state.userInfo = { nickname: '', age: '' };
+      state.consentZulip = false;
+      state.consentEmailFallback = false;
+      state.finalReport = null;
+      state.retryCoachQuestionId = null;
+      $('profile-form').reset();
+      $('result-actions').classList.add('disabled-actions');
+      syncConsentControls();
+      showView('welcome-view');
     }
 
   </script>
