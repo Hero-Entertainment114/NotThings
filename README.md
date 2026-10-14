@@ -1,70 +1,79 @@
-# PsychoClass 2.2 · Calm response edition
+# PsychoClass • Zulip Edition
 
-Khảo sát cảm xúc học đường với giao diện nhẹ nhàng, phản hồi từng câu, tổng kết cá nhân và báo cáo Discord theo lựa chọn đồng ý của người tham gia.
-
-## Có gì mới trong bản này
-
-- Sau câu thứ 10, người dùng nhận được lời nhắn mở đầu ngay lập tức. Phần tổng kết cá nhân tiếp tục được hoàn thiện và tự cập nhật khi sẵn sàng.
-- Báo cáo Discord được gửi ở nền sau khi có phần tổng kết, không bắt người tham gia chờ thao tác gửi tệp hoàn tất. Trạng thái gửi được cập nhật riêng.
-- Phần tổng kết được rút gọn, chỉ đọc nội dung cần thiết, giới hạn độ dài đầu ra để giảm thời gian phản hồi.
-- Hỗ trợ nhóm nhiều Groq API key: luân phiên khóa giữa các yêu cầu, tạm ngưng khóa lỗi và thử khóa dự phòng trong giới hạn thời gian. Khóa lỗi xác thực được tạm ngưng lâu hơn; giới hạn tốc độ được ghi nhận để tránh tiếp tục gọi liên tục.
-- Giao diện hướng tới sự bình tĩnh và an toàn cảm xúc; người tham gia không thấy thông tin kỹ thuật.
-- Vẫn giữ đủ 10 câu; bắt buộc câu TXT số 1 và 2, chọn thêm ngẫu nhiên để có 3–5 câu TXT và 5–7 câu AI.
-- Biệt danh/tuổi không bắt buộc. Báo cáo Discord chỉ được gửi khi người tham gia chủ động đồng ý.
+PsychoClass là ứng dụng Node.js dùng GroqCloud tạo 10 câu hỏi, phản hồi từng câu và tổng kết. Khi người tham gia đồng ý, máy chủ tải báo cáo TXT lên Zulip rồi gửi một tin nhắn vào channel đã cấu hình. Email qua Resend vẫn có thể làm phương án dự phòng nếu người tham gia đồng ý riêng.
 
 ## Yêu cầu
 
 - Node.js 20 trở lên.
-- Một hoặc nhiều Groq API key mà bạn được phép quản lý, có quyền sử dụng mô hình đã cấu hình.
-- Một Discord webhook mới nếu muốn nhận báo cáo tự động.
+- GroqCloud API key.
+- Một Zulip organization/server và bot API credentials.
+- (Tuỳ chọn) Resend API key, email gửi đã xác minh và địa chỉ nhận để bật dự phòng email.
 
-## Khởi chạy trên Windows
+## 1. Tạo channel nhận kết quả trong Zulip
 
-1. Giải nén thư mục `PsychoClass`.
-2. Mở Command Prompt/Terminal tại thư mục đó.
-3. Tạo tệp cấu hình riêng:
+1. Đăng nhập vào Zulip của bạn.
+2. Tạo channel, ví dụ `psychoclass-reports`. Tên này sẽ được đặt vào `ZULIP_CHANNEL`.
+3. Giới hạn thành viên được xem channel vì báo cáo có thể chứa thông tin riêng tư. Nếu cần, đặt channel ở chế độ private và chỉ mời những người thực sự cần đọc.
 
-   ```bat
-   copy .env.example .env
-   notepad .env
-   ```
+## 2. Tạo bot cho ứng dụng
 
-4. Điền khóa AI vào `.env`. Định dạng dễ nhất là danh sách phân cách bằng dấu phẩy:
+1. Bấm biểu tượng bánh răng → **Personal settings** → **Bots** (hoặc **Organization settings** → **Bots** nếu bạn là quản trị viên).
+2. Bấm **Add a new bot**.
+3. Chọn bot loại **Generic** vì phiên bản này cần gọi API tải tệp TXT lên rồi đăng liên kết vào channel. Chỉ dùng bot riêng cho PsychoClass.
+4. Ghi lại email bot và API key. Không dán API key vào HTML, Netlify, GitHub công khai hoặc tin nhắn. Người có API key có thể mạo danh bot.
+5. Thêm bot vào channel `psychoclass-reports` và bảo đảm bot được phép đăng tin. Nếu Zulip của bạn có chính sách quyền riêng tư riêng, hãy kiểm tra bot truy cập được channel đích.
 
-   ```dotenv
-   GROQ_API_KEYS=GROQ_KEY_1,GROQ_KEY_2,GROQ_KEY_3
-   GROQ_MODEL=llama-3.3-70b-versatile
-   DISCORD_WEBHOOK_URL=YOUR_NEW_DISCORD_WEBHOOK_URL
-   PORT=3000
-   ```
+Tài liệu Zulip: [thêm bot](https://zulip.com/help/add-a-bot-or-integration), [quản lý bot/API key](https://zulip.com/help/manage-a-bot), [gửi tin nhắn qua API](https://zulip.com/api/send-message), [tải tệp lên](https://zulip.com/api/upload-file).
 
-   Có thể thay `GROQ_API_KEYS` bằng các biến `GROQ_API_KEY_1`, `GROQ_API_KEY_2`, `GROQ_API_KEY_3`. Bản mới vẫn hỗ trợ biến đơn `GROQ_API_KEY` cho cấu hình cũ. Đừng để nguyên chuỗi `PASTE_...` trong tệp cấu hình.
+## 3. Cấu hình khi chạy trên máy tính
 
-5. Chạy ứng dụng:
+Sao chép `.env.example` thành `.env`, sau đó điền các giá trị:
 
-   ```bat
-   npm start
-   ```
+```dotenv
+GROQ_API_KEY=YOUR_GROQ_API_KEY
+GROQ_MODEL=llama-3.3-70b-versatile
+ZULIP_SITE_URL=https://your-org.zulipchat.com
+ZULIP_BOT_EMAIL=psychoclass-bot@your-org.zulipchat.com
+ZULIP_API_KEY=YOUR_ZULIP_BOT_API_KEY
+ZULIP_CHANNEL=psychoclass-reports
+ZULIP_TOPIC=PsychoClass - Báo cáo khảo sát
+PORT=3000
+```
 
-6. Mở `http://localhost:3000`.
+Thay toàn bộ giá trị ví dụ. `ZULIP_SITE_URL` là địa chỉ gốc của tổ chức Zulip, không phải URL API hay URL webhook. `ZULIP_CHANNEL` phải trùng tên channel thật. `ZULIP_TOPIC` là topic của tin nhắn trong channel.
 
-## Luân phiên nhiều khóa
+Chạy:
 
-- Khóa được luân phiên giữa các yêu cầu. Nếu một khóa gặp lỗi tạm thời, giới hạn tốc độ hoặc lỗi xác thực, hệ thống có thể chuyển sang khóa dự phòng còn hoạt động; khóa lỗi được tạm ngưng trong một khoảng thời gian.
-- Nhiều API key thuộc cùng một tài khoản/tổ chức có thể vẫn dùng chung hạn mức. Không dùng nhóm khóa để né hạn mức cấp tài khoản hoặc giới hạn sử dụng của nhà cung cấp; dùng khóa dự phòng hợp lệ và tuân thủ hạn mức áp dụng.
-- Khóa API không được đưa vào HTML, chia sẻ công khai hay commit lên kho mã nguồn. Nếu nghi ngờ khóa bị lộ, hãy thu hồi và tạo khóa mới.
+```bat
+npm start
+```
 
-## Chỉnh bộ câu hỏi TXT
+Mở `http://localhost:3000`. Kiểm tra `http://localhost:3000/api/health`; trường `zulipConfigured` phải là `true` khi cấu hình đủ. Endpoint này chỉ trả trạng thái, không tiết lộ API key.
 
-Chỉnh `data/cau-hoi.txt`. Mỗi câu cần bắt đầu bằng số, ví dụ `1. Nội dung câu hỏi?`. Tệp cần có ít nhất ba câu đánh số và luôn phải chứa câu 1 và 2.
+## 4. Cấu hình trên Render
 
-## Discord và riêng tư
+1. Mở Render → Web Service của PsychoClass → **Environment**.
+2. Thêm các biến `ZULIP_SITE_URL`, `ZULIP_BOT_EMAIL`, `ZULIP_API_KEY`, `ZULIP_CHANNEL` và `ZULIP_TOPIC` như ví dụ ở trên.
+3. Giữ `GROQ_API_KEY` và `GROQ_MODEL`. Nếu tiếp tục dùng email dự phòng, giữ thêm `RESEND_API_KEY`, `REPORT_EMAIL_FROM`, `REPORT_EMAIL_TO`.
+4. Xóa biến `DISCORD_WEBHOOK_URL` nếu còn sót. Bản này không gửi qua Discord.
+5. Lưu thay đổi và redeploy service.
 
-- Chỉ điền webhook mới trong `.env`. Tệp HTML cũ trong gói gốc đã có webhook trực tiếp; hãy thu hồi webhook cũ và tạo webhook mới trước khi dùng bản nâng cấp.
-- Báo cáo có thể chứa nội dung riêng tư. Chỉ gửi đến kênh Discord có quyền truy cập phù hợp. Người tham gia cần được thông báo rõ nội dung nào sẽ được gửi.
-- Nếu người tham gia không đồng ý, báo cáo không được chuyển sang Discord. Họ vẫn có thể tải hoặc sao chép kết quả trong trình duyệt.
-- Bản tổng kết nhanh được hiển thị trước để người tham gia không phải nhìn màn hình chờ. Khi AI hoàn thiện phản hồi cá nhân, nội dung sẽ tự cập nhật; nếu AI tạm thời không sẵn sàng, lời nhắn mở đầu vẫn hiển thị.
+Nếu Netlify chỉ phục vụ giao diện, đừng đặt Zulip API key lên Netlify hoặc trong `index.html`. Bí mật chỉ nằm ở phần **Environment** của dịch vụ backend Render. Đảm bảo cấu hình proxy trong `netlify.toml` vẫn trỏ tới backend Render của bạn.
 
-## Lưu ý
+## 5. Cách hoạt động
 
-Đây là công cụ tự suy ngẫm, không phải công cụ chẩn đoán hay thay thế chuyên gia tâm lý. AI có thể hiểu sai ngữ cảnh; người dùng nên giữ lại những gợi ý thấy hữu ích và bỏ qua điều không phù hợp. Không nhập mật khẩu hoặc thông tin nhận dạng nhạy cảm. Nếu triển khai ra Internet, hãy dùng HTTPS, kiểm soát quyền truy cập, giới hạn chi phí và cân nhắc bổ sung chống lạm dụng trước khi mời người khác sử dụng.
+- Người tham gia tích **Tôi đồng ý gửi báo cáo đến Zulip** thì sau khi hoàn thành khảo sát, server tạo báo cáo TXT, upload lên Zulip và đăng liên kết cùng phần tổng quan vào channel/topic.
+- Nếu Zulip thất bại, server chỉ gửi email khi người tham gia đã tích riêng lựa chọn email dự phòng và các biến Resend hợp lệ.
+- Nếu không đồng ý gửi, báo cáo không được chuyển tới Zulip hoặc email; người tham gia vẫn có thể tải hoặc sao chép báo cáo trong trình duyệt.
+
+## 6. Kiểm tra lần đầu
+
+1. Mở `/api/health` và xác nhận `aiConfigured`, `zulipConfigured` là `true`.
+2. Thử hoàn thành một khảo sát thử bằng nội dung không nhạy cảm.
+3. Tích đồng ý gửi Zulip; nếu muốn kiểm tra đường dự phòng, tích cả ô email.
+4. Kiểm tra channel `psychoclass-reports`, topic và liên kết TXT.
+5. Nếu lỗi, xem Render → **Logs**. Log được thiết kế không ghi nội dung câu trả lời. Thông báo `channel does not exist` thường nghĩa là sai `ZULIP_CHANNEL`; lỗi 401/403 thường cần kiểm tra bot email/API key/quyền truy cập; lỗi upload thường cần kiểm tra bot quyền gọi API và giới hạn dung lượng của Zulip.
+
+## Riêng tư và an toàn
+
+Báo cáo gồm câu trả lời tự luận và phản hồi AI, vì vậy có thể nhạy cảm. Chỉ cho phép nhóm người thật sự cần thiết xem channel. Không sử dụng tên thật, thông tin nhận dạng hay câu trả lời nhạy cảm trong thử nghiệm. Thu hồi API key nếu vô tình đưa lên GitHub hoặc chia sẻ công khai. Ứng dụng không chẩn đoán tâm lý; nội dung AI có thể sai.
