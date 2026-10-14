@@ -364,14 +364,14 @@
       const zulip = result.zulip || {};
       const emailFallback = result.emailFallback || {};
       if (result.delivery === 'zulip' || zulip.sent) {
-        el.textContent = '✓ Báo cáo đã được gửi đến channel Zulip theo lựa chọn đồng ý của bạn.';
+        el.textContent = 'Cảm ơn bạn đã làm bài khảo sát.';
         el.className = 'success-box';
         if (zulip.messageUrl) {
           const link = document.createElement('a');
           link.href = zulip.messageUrl;
           link.target = '_blank';
           link.rel = 'noopener noreferrer';
-          link.textContent = ' Mở tin nhắn Zulip';
+          link.textContent = ' Link Zulip';
           link.style.marginLeft = '6px';
           el.appendChild(link);
         }
